@@ -1,0 +1,25 @@
+org: braxtonlemmon
+app: recipe
+service: rest-api
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  stage: dev
+  region: eu-west-1
+
+functions:
+  app:
+    handler: dist-server/server.handler
+    events:
+      - http:
+          path: /
+          method: ANY
+          cors: true
+      - http:
+          path: /{proxy+}
+          method: ANY
+          cors: true
+          
+plugins:
+- serverless-offline
