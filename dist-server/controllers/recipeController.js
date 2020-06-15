@@ -156,12 +156,14 @@ var updateRecipe = [upload.single('image'), (0, _expressValidator.body)("title",
 }];
 
 var destroyRecipe = function destroyRecipe(req, res, next) {
-  _recipe["default"].findById(req.params.id).exec(function (err, recipe) {
+  var id = req.params.id;
+
+  _recipe["default"].findById(id).exec(function (err, recipe) {
     if (err) {
       return next(err);
     }
 
-    _recipe["default"].findByIdAndRemove(req.body.recipeid, function deleteRecipe(err) {
+    _recipe["default"].findByIdAndRemove(id, function deleteRecipe(err) {
       if (err) {
         return next(err);
       }

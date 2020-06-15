@@ -9,30 +9,22 @@ var _express = require("express");
 
 var _recipeController = _interopRequireDefault(require("../controllers/recipeController"));
 
+var _passport = _interopRequireDefault(require("passport"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-// import passport from 'passport';
 var router = (0, _express.Router)();
 router.get('/', _recipeController["default"].indexRecipes);
 router.get("/published", _recipeController["default"].indexPublishedRecipes);
-router.post('/', _recipeController["default"].createRecipe);
-router.put('/:id', _recipeController["default"].updateRecipe);
-router["delete"]('/:id', _recipeController["default"].destroyRecipe);
-router.get('/:id', _recipeController["default"].showRecipe); // router.post(
-//   "/recipes",
-//   passport.authenticate("jwt", { session: false }),
-//   recipeController.createRecipe
-// );
-// router.put(
-//   "/recipes/:id",
-//   passport.authenticate("jwt", { session: false }),
-//   recipeController.updateRecipe
-// );
-// router.delete(
-//   "/recipes/:id",
-//   passport.authenticate("jwt", { session: false }),
-//   recipeController.destroyRecipe
-// );
-
+router.post("/recipes", _passport["default"].authenticate("jwt", {
+  session: false
+}), _recipeController["default"].createRecipe);
+router.put("/recipes/:id", _passport["default"].authenticate("jwt", {
+  session: false
+}), _recipeController["default"].updateRecipe);
+router["delete"]("/recipes/:id", _passport["default"].authenticate("jwt", {
+  session: false
+}), _recipeController["default"].destroyRecipe);
+router.get('/:id', _recipeController["default"].showRecipe);
 var _default = router;
 exports["default"] = _default;

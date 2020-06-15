@@ -69,12 +69,14 @@ var createComment = [(0, _expressValidator.body)('content', 'Content is required
 }];
 
 var destroyComment = function destroyComment(req, res, next) {
-  _comment["default"].findById(req.params.id).exec(function (err, comment) {
+  var id = req.params.id;
+
+  _comment["default"].findById(id).exec(function (err, comment) {
     if (err) {
       return next(err);
     }
 
-    _comment["default"].findByIdAndRemove(req.body.commentid, function deleteComment(err) {
+    _comment["default"].findByIdAndRemove(id, function deleteComment(err) {
       if (err) {
         return next(err);
       }

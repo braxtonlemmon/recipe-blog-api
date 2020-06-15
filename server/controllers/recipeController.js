@@ -130,10 +130,11 @@ const updateRecipe = [
 ];
 
 const destroyRecipe = (req, res, next) => {
-  Recipe.findById(req.params.id)
+  const id = req.params.id;
+  Recipe.findById(id)
   .exec(function(err, recipe) {
     if (err) { return next(err) }
-    Recipe.findByIdAndRemove(req.body.recipeid, function deleteRecipe(err) {
+    Recipe.findByIdAndRemove(id, function deleteRecipe(err) {
       if (err) { return next(err) }
       res.send('recipe deleted')
     })
