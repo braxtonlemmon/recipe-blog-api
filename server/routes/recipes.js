@@ -7,17 +7,17 @@ const router = Router();
 router.get('/', recipeController.indexRecipes);
 router.get("/published", recipeController.indexPublishedRecipes);
 router.post(
-  "/recipes",
+  "/",
   passport.authenticate("jwt", { session: false }),
   recipeController.createRecipe
 );
 router.put(
-  "/recipes/:id",
+  "/:id",
   passport.authenticate("jwt", { session: false }),
   recipeController.updateRecipe
 );
 router.delete(
-  "/recipes/:id",
+  "/:id",
   passport.authenticate("jwt", { session: false }),
   recipeController.destroyRecipe
 );
