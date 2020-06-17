@@ -22,7 +22,11 @@ const login = [
             const token = issueJWT(user);
             res.cookie("token", token, {
               httpOnly: true,
+<<<<<<< HEAD
               // secure: true,
+=======
+
+>>>>>>> auth
               maxAge: 24 * 60 * 60 * 1000,
             });
             console.log(token);

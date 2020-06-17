@@ -1,13 +1,14 @@
 import Recipe from '../models/recipe';
 import { body, validationResult } from 'express-validator';
 const he = require('he');
-const upload = require('../services/file-upload');
+// const upload = require('../services/file-upload');
 
 const indexRecipes = (req, res, next) => {
   Recipe.find((err, data) => {
     if (err) return res.json({ success: false, error: err });
     data.forEach(recipe => {
       recipe.title = he.decode(recipe.title);
+      recipe.image ? recipe.image = he.decode(recipe.image) : null;
       recipe.intro = he.decode(recipe.intro);
       recipe.quote = he.decode(recipe.quote);
       recipe.steps = recipe.steps.map(step => he.decode(step));
@@ -23,6 +24,7 @@ const indexPublishedRecipes = (req, res, next) => {
     if (err) return res.json({ success: false, error: err });
     data.forEach((recipe) => {
       recipe.title = he.decode(recipe.title);
+      recipe.image ? recipe.image = he.decode(recipe.image) : null;
       recipe.intro = he.decode(recipe.intro);
       recipe.quote = he.decode(recipe.quote);
       recipe.steps = recipe.steps.map((step) => he.decode(step));
@@ -48,17 +50,17 @@ const showRecipe = (req, res, next) => {
 };
 
 const createRecipe = [
-  upload.single('image'),
+  // upload.single('image'),
   body('title', 'Title is required').trim().isLength({ min: 1 }),
   body('ingredients', 'Ingredients are required.').exists(),
   body('steps', 'Recipe steps are required.').exists(),
-  
   body('title').escape(),
   body('ingredients.*').escape(),
   body('steps.*').escape(),
+  body('image').escape(),
 
   (req, res, next) => {
-    console.log(req.body);
+    console.log(req.body.image);
     const errors = validationResult(req);
     const recipe = new Recipe({
       title: req.body.title,
@@ -66,15 +68,16 @@ const createRecipe = [
       steps: JSON.parse(req.body.steps),
       is_published: req.body.is_published,
       publish_date: req.body.is_published === 'true' ? Date.now() : null,
-      image: req.file === undefined ? '' : req.file.location
+      // image: req.file === undefined ? '' : req.file.location
     })
+    req.body.image ? (recipe.image = he.decode(req.body.image)) : null;
+    req.body.intro ? (recipe.intro = req.body.intro) : null;
+    req.body.quote ? (recipe.quote = req.body.quote) : null;
     if (!errors.isEmpty()) {
       res.send({ recipe: recipe, errors: errors.array() });
       return;
     }
     else {
-      req.body.intro ? (recipe.intro = req.body.intro) : null;
-      req.body.quote ? (recipe.quote = req.body.quote) : null;
       recipe.save(function(err) {
         console.log('saving');
         if (err) { 
@@ -88,7 +91,7 @@ const createRecipe = [
 ];
 
 const updateRecipe = [
-  upload.single('image'),
+  // upload.single('image'),
   body("title", "Title is required").trim().isLength({ min: 1 }),
   body("ingredients", "Ingredients are required.").exists(),
   body("steps", "Recipe steps are required.").exists(),
@@ -96,6 +99,7 @@ const updateRecipe = [
   body('title').escape(),
   body('ingredients.*').escape(),
   body('steps.*').escape(),
+  body('image').escape(),
 
   (req, res, next) => {
     const errors = validationResult(req);
@@ -109,9 +113,10 @@ const updateRecipe = [
       steps: JSON.parse(req.body.steps),
       is_published: req.body.is_published,
       publish_date: Date.now(),
-      image: req.file === undefined ? originalRecipe.image : req.file.location, 
+      // image: req.file === undefined ? originalRecipe.image : req.file.location, 
       _id: req.params.id
     });
+    req.body.image ? (recipe.image = he.decode(req.body.image)) : null;
     req.body.intro ? (recipe.intro = req.body.intro) : null;
     req.body.quote ? (recipe.quote = req.body.quote) : null;
     if (!errors.isEmpty()) {

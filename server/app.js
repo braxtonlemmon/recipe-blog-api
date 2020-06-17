@@ -36,5 +36,7 @@ app.use('/api/users', routes.users);
 app.use('/api/recipes', routes.recipes);
 app.use('/api/comments', routes.comments)
 app.use('/api/auth', routes.auth);
-
+app.get('/api/me', passport.authenticate('jwt', { session: false }), (req, res, next) => {
+  return res.json({ success: true, user: req.user.username });
+})
 module.exports = app;
