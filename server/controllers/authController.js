@@ -25,7 +25,7 @@ const login = [
             // res.cookie('token', token, { maxAge: 24 * 60 * 60 * 1000, httpOnly: true, secure: true, sameSite: "Lax"  });
             res.cookie("token", token, {
               httpOnly: true,
-              secure: true,
+
               maxAge: 24 * 60 * 60 * 1000,
             });
             console.log(token);

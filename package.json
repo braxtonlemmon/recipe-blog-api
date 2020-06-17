@@ -36,6 +36,7 @@
     "@babel/core": "^7.10.2",
     "@babel/preset-env": "^7.10.2",
     "aws-sdk": "^2.696.0",
+    "aws-serverless-express-binary": "^1.0.1",
     "bcrypt": "^5.0.0",
     "bcryptjs": "^2.4.3",
     "bcryptjs-then": "^1.0.1",
@@ -61,6 +62,7 @@
     "passport-jwt": "^4.0.0",
     "path": "^0.12.7",
     "rimraf": "^3.0.2",
+    "serverless-apigw-binary": "^0.4.4",
     "serverless-http": "^2.5.0"
   },
   "babel": {

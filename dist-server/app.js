@@ -46,4 +46,12 @@ app.use('/api/users', _routes["default"].users);
 app.use('/api/recipes', _routes["default"].recipes);
 app.use('/api/comments', _routes["default"].comments);
 app.use('/api/auth', _routes["default"].auth);
+app.get('/api/me', _passport["default"].authenticate('jwt', {
+  session: false
+}), function (req, res, next) {
+  return res.json({
+    success: true,
+    user: req.user.username
+  });
+});
 module.exports = app;

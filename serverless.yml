@@ -2,6 +2,9 @@ org: braxtonlemmon
 app: recipe
 service: rest-api
 
+plugins:
+  - serverless-offline
+
 provider:
   name: aws
   runtime: nodejs12.x
@@ -16,10 +19,10 @@ functions:
           path: /
           method: ANY
           cors: true
+
       - http:
           path: /{proxy+}
           method: ANY
           cors: true
+
           
-plugins:
-- serverless-offline

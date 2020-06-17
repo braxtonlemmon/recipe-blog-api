@@ -42,7 +42,6 @@ var login = [(0, _expressValidator.body)('username', 'Username is required').tri
 
         res.cookie("token", token, {
           httpOnly: true,
-          secure: true,
           maxAge: 24 * 60 * 60 * 1000
         });
         console.log(token);

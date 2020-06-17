@@ -11,9 +11,8 @@ var _expressValidator = require("express-validator");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
-var he = require('he');
+var he = require('he'); // const upload = require('../services/file-upload');
 
-var upload = require('../services/file-upload');
 
 var indexRecipes = function indexRecipes(req, res, next) {
   _recipe["default"].find(function (err, data) {
@@ -23,6 +22,7 @@ var indexRecipes = function indexRecipes(req, res, next) {
     });
     data.forEach(function (recipe) {
       recipe.title = he.decode(recipe.title);
+      recipe.image ? recipe.image = he.decode(recipe.image) : null;
       recipe.intro = he.decode(recipe.intro);
       recipe.quote = he.decode(recipe.quote);
       recipe.steps = recipe.steps.map(function (step) {
@@ -49,6 +49,7 @@ var indexPublishedRecipes = function indexPublishedRecipes(req, res, next) {
     });
     data.forEach(function (recipe) {
       recipe.title = he.decode(recipe.title);
+      recipe.image ? recipe.image = he.decode(recipe.image) : null;
       recipe.intro = he.decode(recipe.intro);
       recipe.quote = he.decode(recipe.quote);
       recipe.steps = recipe.steps.map(function (step) {
@@ -85,19 +86,23 @@ var showRecipe = function showRecipe(req, res, next) {
   });
 };
 
-var createRecipe = [upload.single('image'), (0, _expressValidator.body)('title', 'Title is required').trim().isLength({
+var createRecipe = [// upload.single('image'),
+(0, _expressValidator.body)('title', 'Title is required').trim().isLength({
   min: 1
-}), (0, _expressValidator.body)('ingredients', 'Ingredients are required.').exists(), (0, _expressValidator.body)('steps', 'Recipe steps are required.').exists(), (0, _expressValidator.body)('title').escape(), (0, _expressValidator.body)('ingredients.*').escape(), (0, _expressValidator.body)('steps.*').escape(), function (req, res, next) {
-  console.log(req.body);
+}), (0, _expressValidator.body)('ingredients', 'Ingredients are required.').exists(), (0, _expressValidator.body)('steps', 'Recipe steps are required.').exists(), (0, _expressValidator.body)('title').escape(), (0, _expressValidator.body)('ingredients.*').escape(), (0, _expressValidator.body)('steps.*').escape(), (0, _expressValidator.body)('image').escape(), function (req, res, next) {
+  console.log(req.body.image);
   var errors = (0, _expressValidator.validationResult)(req);
   var recipe = new _recipe["default"]({
     title: req.body.title,
     ingredients: JSON.parse(req.body.ingredients),
     steps: JSON.parse(req.body.steps),
     is_published: req.body.is_published,
-    publish_date: req.body.is_published === 'true' ? Date.now() : null,
-    image: req.file === undefined ? '' : req.file.location
+    publish_date: req.body.is_published === 'true' ? Date.now() : null // image: req.file === undefined ? '' : req.file.location
+
   });
+  req.body.image ? recipe.image = he.decode(req.body.image) : null;
+  req.body.intro ? recipe.intro = req.body.intro : null;
+  req.body.quote ? recipe.quote = req.body.quote : null;
 
   if (!errors.isEmpty()) {
     res.send({
@@ -106,8 +111,6 @@ var createRecipe = [upload.single('image'), (0, _expressValidator.body)('title',
     });
     return;
   } else {
-    req.body.intro ? recipe.intro = req.body.intro : null;
-    req.body.quote ? recipe.quote = req.body.quote : null;
     recipe.save(function (err) {
       console.log('saving');
 
@@ -120,9 +123,10 @@ var createRecipe = [upload.single('image'), (0, _expressValidator.body)('title',
     });
   }
 }];
-var updateRecipe = [upload.single('image'), (0, _expressValidator.body)("title", "Title is required").trim().isLength({
+var updateRecipe = [// upload.single('image'),
+(0, _expressValidator.body)("title", "Title is required").trim().isLength({
   min: 1
-}), (0, _expressValidator.body)("ingredients", "Ingredients are required.").exists(), (0, _expressValidator.body)("steps", "Recipe steps are required.").exists(), (0, _expressValidator.body)('title').escape(), (0, _expressValidator.body)('ingredients.*').escape(), (0, _expressValidator.body)('steps.*').escape(), function (req, res, next) {
+}), (0, _expressValidator.body)("ingredients", "Ingredients are required.").exists(), (0, _expressValidator.body)("steps", "Recipe steps are required.").exists(), (0, _expressValidator.body)('title').escape(), (0, _expressValidator.body)('ingredients.*').escape(), (0, _expressValidator.body)('steps.*').escape(), (0, _expressValidator.body)('image').escape(), function (req, res, next) {
   var errors = (0, _expressValidator.validationResult)(req);
 
   var originalRecipe = function originalRecipe(callback) {
@@ -135,9 +139,10 @@ var updateRecipe = [upload.single('image'), (0, _expressValidator.body)("title",
     steps: JSON.parse(req.body.steps),
     is_published: req.body.is_published,
     publish_date: Date.now(),
-    image: req.file === undefined ? originalRecipe.image : req.file.location,
+    // image: req.file === undefined ? originalRecipe.image : req.file.location, 
     _id: req.params.id
   });
+  req.body.image ? recipe.image = he.decode(req.body.image) : null;
   req.body.intro ? recipe.intro = req.body.intro : null;
   req.body.quote ? recipe.quote = req.body.quote : null;
 

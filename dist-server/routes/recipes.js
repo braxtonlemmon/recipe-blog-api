@@ -16,13 +16,13 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "d
 var router = (0, _express.Router)();
 router.get('/', _recipeController["default"].indexRecipes);
 router.get("/published", _recipeController["default"].indexPublishedRecipes);
-router.post("/recipes", _passport["default"].authenticate("jwt", {
+router.post("/", _passport["default"].authenticate("jwt", {
   session: false
 }), _recipeController["default"].createRecipe);
-router.put("/recipes/:id", _passport["default"].authenticate("jwt", {
+router.put("/:id", _passport["default"].authenticate("jwt", {
   session: false
 }), _recipeController["default"].updateRecipe);
-router["delete"]("/recipes/:id", _passport["default"].authenticate("jwt", {
+router["delete"]("/:id", _passport["default"].authenticate("jwt", {
   session: false
 }), _recipeController["default"].destroyRecipe);
 router.get('/:id', _recipeController["default"].showRecipe);
