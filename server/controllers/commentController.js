@@ -3,6 +3,7 @@ import { body, validationResult } from 'express-validator';
 
 const recipeComments = (req, res, next) => {
   Comment.find({ recipe: req.params.recipeid })
+  .sort({ level: 1, created: 1})
   .exec((err, comments) => {
     if (err) {
       return next(err);
@@ -13,6 +14,7 @@ const recipeComments = (req, res, next) => {
 
 const indexComments = (req, res, next) => {
   Comment.find({  })
+  .sort({ level: 1, created: 1})
   .exec((err, comments) => {
     if (err) {
       return next(err);
@@ -33,7 +35,10 @@ const createComment = [
       content: req.body.content,
       name: req.body.name === '' ? 'Anonymous' : req.body.name,
       created: Date.now(),
-      recipe: req.body.recipe
+      recipe: req.body.recipe,
+      replies: [],
+      level: req.body.level === 0 ? 0 : 1,
+      parent: req.body.parent
     });
     if (!errors.isEmpty()) {
       res.send({ comment: comment, errors: errors.array() });

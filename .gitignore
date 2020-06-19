@@ -6,5 +6,5 @@ jspm_packages
 .serverless
 
 variables.env
-
 dist-server
+populatedb.js
