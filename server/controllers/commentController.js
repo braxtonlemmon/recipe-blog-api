@@ -19,8 +19,7 @@ const indexComments = (req, res, next) => {
     if (err) {
       return next(err);
     }
-    res.send(comments);
-    return;
+    return res.json({ success: true, data: comments });
   });
 }
 
