@@ -103,17 +103,13 @@ const updateRecipe = [
 
   (req, res, next) => {
     const errors = validationResult(req);
-    const originalRecipe = function(callback) {
-      Recipe.findById(req.params.id)
-      .exec(callback);
-    }    
+  
     const recipe = new Recipe({
       title: req.body.title,
       ingredients: JSON.parse(req.body.ingredients),
       steps: JSON.parse(req.body.steps),
       is_published: req.body.is_published,
       publish_date: Date.now(),
-      // image: req.file === undefined ? originalRecipe.image : req.file.location, 
       _id: req.params.id
     });
     req.body.image ? (recipe.image = he.decode(req.body.image)) : null;

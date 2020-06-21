@@ -14,7 +14,7 @@ const recipeComments = (req, res, next) => {
 
 const indexComments = (req, res, next) => {
   Comment.find({  })
-  .sort({ level: 1, created: 1})
+  .sort({ created: -1})
   .exec((err, comments) => {
     if (err) {
       return next(err);
@@ -38,7 +38,8 @@ const createComment = [
       recipe: req.body.recipe,
       replies: [],
       level: req.body.level === 0 ? 0 : 1,
-      parent: req.body.parent
+      parent: req.body.parent,
+      answered: false
     });
     if (!errors.isEmpty()) {
       res.send({ comment: comment, errors: errors.array() });
@@ -52,6 +53,49 @@ const createComment = [
     })
   }
 ];
+
+const updateCommentGet = function (req, res, next) {
+  Comment.findById(req.params.id)
+  .exec(function(err, comment) {
+    if (err) { return next(err) }
+    if (comment === null) {
+      const err = new Error('Comment not found');
+      err.status = 404;
+      return next(err);
+    }
+    res.send({ success: true, comment: comment })
+  })
+}
+
+const updateCommentPost = [
+  body('content', 'Content is required').trim().isLength({ min: 1, max: 1000 }),
+  body('name').escape(),
+  body('recipe', 'Recipe is required').trim().isLength({ min: 1 }),
+
+  (req, res, next) => {
+    const errors = validationResult(req);
+    const comment = new Comment({
+      content: req.body.content,
+      name: req.body.name === '' ? 'Anonymous' : req.body.name,
+      created: req.body.created,
+      recipe: req.body.recipe,
+      level: req.body.level,
+      parent: req.body.parent,
+      answered: req.body.answered,
+      _id: req.params.id
+    });
+    if (!errors.isEmpty()) {
+      res.send({ comment: comment, errors: errors.array() });
+      return;
+    }
+    Comment.findByIdAndUpdate(req.params.id, comment, {}, function(err, theComment) {
+      if (err) {
+        return next(err);
+      }
+      res.send(theComment);
+    })
+  }
+]
 
 const destroyComment = (req, res, next) => {
   const id = req.params.id;
@@ -74,4 +118,6 @@ export default {
   indexComments,
   createComment,
   destroyComment,
+  updateCommentGet,
+  updateCommentPost
 }
