@@ -9,6 +9,9 @@ router.get('/:recipeid', commentsController.recipeComments);
 // GET all comments (order by date)
 router.get('/',       commentsController.indexComments);
 
+// GET all unseen comments (order by date)
+router.get('/unseen', commentsController.unseenComments);
+
 // POST new comment to specific recipe
 router.post('/',      commentsController.createComment);
 

@@ -4,13 +4,14 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const CommentSchema = new Schema({
-  content:  { type: String, required: true, max: 1000 },
-  name:     { type: String, max: 100 },
-  created:  { type: Date, required: true },
-  recipe:   { type: Schema.Types.ObjectId, ref: 'User', required: true },
-  level:    { type: Number },
-  parent:   { type: Schema.Types.ObjectId, ref: 'Comment' },
-  answered: { type: Boolean }
+  content:   { type: String, required: true, max: 1000 },
+  name:      { type: String, max: 100 },
+  created:   { type: Date, required: true },
+  recipe:    { type: Schema.Types.ObjectId, ref: 'User', required: true },
+  level:     { type: Number },
+  parent:    { type: Schema.Types.ObjectId, ref: 'Comment' },
+  answered:  { type: Boolean },
+  fromAdmin: { type: Boolean }
 });
 
 CommentSchema.set('toObject', { virtuals: true });

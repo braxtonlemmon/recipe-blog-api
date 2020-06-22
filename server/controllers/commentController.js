@@ -23,6 +23,17 @@ const indexComments = (req, res, next) => {
   });
 }
 
+const unseenComments = (req, res, next) => {
+  Comment.find({ answered: false })
+  .sort({ created: -1 })
+  .exec((err, comments) => {
+    if (err) {
+      return next(err);
+    }
+    return res.json({ success: true, data: comments });
+  });
+}
+
 const createComment = [
   body('content', 'Content is required').trim().isLength({ min: 1, max: 1000 }),
   body('name').escape(),
@@ -35,9 +46,9 @@ const createComment = [
       name: req.body.name === '' ? 'Anonymous' : req.body.name,
       created: Date.now(),
       recipe: req.body.recipe,
-      replies: [],
       level: req.body.level === 0 ? 0 : 1,
       parent: req.body.parent,
+      fromAdmin: req.body.fromAdmin,
       answered: false
     });
     if (!errors.isEmpty()) {
@@ -81,6 +92,7 @@ const updateCommentPost = [
       level: req.body.level,
       parent: req.body.parent,
       answered: req.body.answered,
+      fromAdmin: req.body.fromAdmin,
       _id: req.params.id
     });
     if (!errors.isEmpty()) {
@@ -115,6 +127,7 @@ const destroyComment = (req, res, next) => {
 export default {
   recipeComments,
   indexComments,
+  unseenComments,
   createComment,
   destroyComment,
   updateCommentGet,
