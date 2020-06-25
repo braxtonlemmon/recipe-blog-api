@@ -3,6 +3,7 @@ import { body, validationResult } from 'express-validator';
 
 const recipeComments = (req, res, next) => {
   Comment.find({ recipe: req.params.recipeid })
+  .populate('recipe')
   .sort({ level: 1, created: 1})
   .exec((err, comments) => {
     if (err) {
@@ -14,6 +15,7 @@ const recipeComments = (req, res, next) => {
 
 const indexComments = (req, res, next) => {
   Comment.find({  })
+  .populate('recipe')
   .sort({ created: -1})
   .exec((err, comments) => {
     if (err) {
@@ -37,7 +39,7 @@ const unseenComments = (req, res, next) => {
 const createComment = [
   body('content', 'Content is required').trim().isLength({ min: 1, max: 1000 }),
   body('name').escape(),
-  body('recipe', 'Recipe is required').trim().isLength({ min: 1 }),
+  // body('recipe', 'Recipe is required').trim().isLength({ min: 1 }),
   
   (req, res, next) => {
     const errors = validationResult(req);
@@ -45,11 +47,11 @@ const createComment = [
       content: req.body.content,
       name: req.body.name === '' ? 'Anonymous' : req.body.name,
       created: Date.now(),
-      recipe: req.body.recipe,
+      recipe: req.body.recipe._id,
       level: req.body.level === 0 ? 0 : 1,
       parent: req.body.parent,
       fromAdmin: req.body.fromAdmin,
-      answered: false
+      answered: req.body.answered ? req.body.answered : false,
     });
     if (!errors.isEmpty()) {
       res.send({ comment: comment, errors: errors.array() });
@@ -80,7 +82,7 @@ const updateCommentGet = function (req, res, next) {
 const updateCommentPost = [
   body('content', 'Content is required').trim().isLength({ min: 1, max: 1000 }),
   body('name').escape(),
-  body('recipe', 'Recipe is required').trim().isLength({ min: 1 }),
+  // body('recipe', 'Recipe is required').trim().isLength({ min: 1 }),
 
   (req, res, next) => {
     const errors = validationResult(req);
@@ -88,7 +90,7 @@ const updateCommentPost = [
       content: req.body.content,
       name: req.body.name === '' ? 'Anonymous' : req.body.name,
       created: req.body.created,
-      recipe: req.body.recipe,
+      recipe: req.body.recipe._id,
       level: req.body.level,
       parent: req.body.parent,
       answered: req.body.answered,
