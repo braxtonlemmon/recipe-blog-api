@@ -8,7 +8,8 @@ const indexRecipes = (req, res, next) => {
     if (err) return res.json({ success: false, error: err });
     data.forEach(recipe => {
       recipe.title = he.decode(recipe.title);
-      recipe.image ? recipe.image = he.decode(recipe.image) : null;
+      // recipe.image ? recipe.image = he.decode(recipe.image) : null;
+      recipe.images = recipe.images.map(image => he.decode(image));
       recipe.intro = he.decode(recipe.intro);
       recipe.quote = he.decode(recipe.quote);
       recipe.steps = recipe.steps.map(step => he.decode(step));
@@ -24,7 +25,8 @@ const indexPublishedRecipes = (req, res, next) => {
     if (err) return res.json({ success: false, error: err });
     data.forEach((recipe) => {
       recipe.title = he.decode(recipe.title);
-      recipe.image ? recipe.image = he.decode(recipe.image) : null;
+      // recipe.image ? recipe.image = he.decode(recipe.image) : null;
+      recipe.images = recipe.images.map(image => he.decode(image));
       recipe.intro = he.decode(recipe.intro);
       recipe.quote = he.decode(recipe.quote);
       recipe.steps = recipe.steps.map((step) => he.decode(step));
@@ -57,7 +59,8 @@ const createRecipe = [
   body('title').escape(),
   body('ingredients.*').escape(),
   body('steps.*').escape(),
-  body('image').escape(),
+  // body('image').escape(),
+  body('images.*').escape(),
 
   (req, res, next) => {
     console.log(req.body.image);
@@ -66,11 +69,12 @@ const createRecipe = [
       title: req.body.title,
       ingredients: JSON.parse(req.body.ingredients),
       steps: JSON.parse(req.body.steps),
+      images: JSON.parse(req.body.images),
       is_published: req.body.is_published,
       publish_date: req.body.is_published === 'true' ? Date.now() : null,
       // image: req.file === undefined ? '' : req.file.location
     })
-    req.body.image ? (recipe.image = he.decode(req.body.image)) : null;
+    // req.body.image ? (recipe.image = he.decode(req.body.image)) : null;
     req.body.intro ? (recipe.intro = req.body.intro) : null;
     req.body.quote ? (recipe.quote = req.body.quote) : null;
     if (!errors.isEmpty()) {
@@ -99,7 +103,8 @@ const updateRecipe = [
   body('title').escape(),
   body('ingredients.*').escape(),
   body('steps.*').escape(),
-  body('image').escape(),
+  // body('image').escape(),
+  body('images.*').escape(),
 
   (req, res, next) => {
     const errors = validationResult(req);
@@ -108,11 +113,12 @@ const updateRecipe = [
       title: req.body.title,
       ingredients: JSON.parse(req.body.ingredients),
       steps: JSON.parse(req.body.steps),
+      images: JSON.parse(req.body.images),
       is_published: req.body.is_published,
       publish_date: Date.now(),
       _id: req.params.id
     });
-    req.body.image ? (recipe.image = he.decode(req.body.image)) : null;
+    // req.body.image ? (recipe.image = he.decode(req.body.image)) : null;
     req.body.intro ? (recipe.intro = req.body.intro) : null;
     req.body.quote ? (recipe.quote = req.body.quote) : null;
     if (!errors.isEmpty()) {
