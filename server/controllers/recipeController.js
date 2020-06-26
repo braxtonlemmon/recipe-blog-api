@@ -1,6 +1,8 @@
 import Recipe from '../models/recipe';
+import Comment from '../models/comment';
 import { body, validationResult } from 'express-validator';
 const he = require('he');
+const async = require('async');
 
 const indexRecipes = (req, res, next) => {
   Recipe.find((err, data) => {
@@ -131,12 +133,23 @@ const updateRecipe = [
 
 const destroyRecipe = (req, res, next) => {
   const id = req.params.id;
-  Recipe.findById(id)
-  .exec(function(err, recipe) {
+  async.parallel({
+    recipe: function(callback) {
+      Recipe.findById(id).exec(callback)
+    },
+    comments: function(callback) {
+      Comment.find({ 'recipe': id }).exec(callback)
+    },
+  }, function(err, results) {
     if (err) { return next(err) }
     Recipe.findByIdAndRemove(id, function deleteRecipe(err) {
       if (err) { return next(err) }
-      res.send('recipe deleted')
+      results.comments.forEach(comment => {
+        Comment.findByIdAndRemove(comment._id, function deleteComment(err) {
+          if (err) { return next(err) }
+        })
+      })
+      res.send('recipe deleted');
     })
   })
 }
