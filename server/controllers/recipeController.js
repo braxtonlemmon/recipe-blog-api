@@ -1,14 +1,12 @@
 import Recipe from '../models/recipe';
 import { body, validationResult } from 'express-validator';
 const he = require('he');
-// const upload = require('../services/file-upload');
 
 const indexRecipes = (req, res, next) => {
   Recipe.find((err, data) => {
     if (err) return res.json({ success: false, error: err });
     data.forEach(recipe => {
       recipe.title = he.decode(recipe.title);
-      // recipe.image ? recipe.image = he.decode(recipe.image) : null;
       recipe.images = recipe.images.map(image => he.decode(image));
       recipe.intro = he.decode(recipe.intro);
       recipe.quote = he.decode(recipe.quote);
@@ -25,7 +23,6 @@ const indexPublishedRecipes = (req, res, next) => {
     if (err) return res.json({ success: false, error: err });
     data.forEach((recipe) => {
       recipe.title = he.decode(recipe.title);
-      // recipe.image ? recipe.image = he.decode(recipe.image) : null;
       recipe.images = recipe.images.map(image => he.decode(image));
       recipe.intro = he.decode(recipe.intro);
       recipe.quote = he.decode(recipe.quote);
@@ -56,10 +53,11 @@ const createRecipe = [
   body('title', 'Title is required').trim().isLength({ min: 1 }),
   body('ingredients', 'Ingredients are required.').exists(),
   body('steps', 'Recipe steps are required.').exists(),
+  body("images", "At least one image required.").exists(),
+
   body('title').escape(),
   body('ingredients.*').escape(),
   body('steps.*').escape(),
-  // body('image').escape(),
   body('images.*').escape(),
 
   (req, res, next) => {
@@ -72,9 +70,7 @@ const createRecipe = [
       images: JSON.parse(req.body.images),
       is_published: req.body.is_published,
       publish_date: req.body.is_published === 'true' ? Date.now() : null,
-      // image: req.file === undefined ? '' : req.file.location
     })
-    // req.body.image ? (recipe.image = he.decode(req.body.image)) : null;
     req.body.intro ? (recipe.intro = req.body.intro) : null;
     req.body.quote ? (recipe.quote = req.body.quote) : null;
     if (!errors.isEmpty()) {
@@ -95,15 +91,13 @@ const createRecipe = [
 ];
 
 const updateRecipe = [
-  // upload.single('image'),
   body("title", "Title is required").trim().isLength({ min: 1 }),
   body("ingredients", "Ingredients are required.").exists(),
   body("steps", "Recipe steps are required.").exists(),
-
+  body("images", "At least one image required.").exists(),
   body('title').escape(),
   body('ingredients.*').escape(),
   body('steps.*').escape(),
-  // body('image').escape(),
   body('images.*').escape(),
 
   (req, res, next) => {
@@ -118,7 +112,6 @@ const updateRecipe = [
       publish_date: Date.now(),
       _id: req.params.id
     });
-    // req.body.image ? (recipe.image = he.decode(req.body.image)) : null;
     req.body.intro ? (recipe.intro = req.body.intro) : null;
     req.body.quote ? (recipe.quote = req.body.quote) : null;
     if (!errors.isEmpty()) {

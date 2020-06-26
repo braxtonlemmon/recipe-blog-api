@@ -8,7 +8,6 @@ const RecipeSchema = new Schema({
   steps: { type: Array, required: true },
   intro: { type: String },
   quote: { type: String },
-  // image: { type: String },
   images: { type: Array },
   is_published: { type: Boolean, default: false },
   publish_date: { type: Date, default: '' },
