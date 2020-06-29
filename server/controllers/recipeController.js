@@ -56,11 +56,12 @@ const createRecipe = [
   body('ingredients', 'Ingredients are required.').exists(),
   body('steps', 'Recipe steps are required.').exists(),
   body("images", "At least one image required.").exists(),
-
+  body('duration', 'Recipe duration is required').exists(),
   body('title').escape(),
   body('ingredients.*').escape(),
   body('steps.*').escape(),
   body('images.*').escape(),
+  body('duration').escape(),
 
   (req, res, next) => {
     console.log(req.body.image);
@@ -69,6 +70,7 @@ const createRecipe = [
       title: req.body.title,
       ingredients: JSON.parse(req.body.ingredients),
       steps: JSON.parse(req.body.steps),
+      duration: req.body.duration,
       images: JSON.parse(req.body.images),
       is_published: req.body.is_published,
       publish_date: req.body.is_published === 'true' ? Date.now() : null,
@@ -97,10 +99,12 @@ const updateRecipe = [
   body("ingredients", "Ingredients are required.").exists(),
   body("steps", "Recipe steps are required.").exists(),
   body("images", "At least one image required.").exists(),
+  body('duration', 'Recipe duration is required').exists(),
   body('title').escape(),
   body('ingredients.*').escape(),
   body('steps.*').escape(),
   body('images.*').escape(),
+  body('duration').escape(),
 
   (req, res, next) => {
     const errors = validationResult(req);
@@ -109,6 +113,7 @@ const updateRecipe = [
       title: req.body.title,
       ingredients: JSON.parse(req.body.ingredients),
       steps: JSON.parse(req.body.steps),
+      duration: req.body.duration,
       images: JSON.parse(req.body.images),
       is_published: req.body.is_published,
       publish_date: Date.now(),
