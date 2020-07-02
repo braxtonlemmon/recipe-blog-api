@@ -8,8 +8,14 @@ const cookieExtractor = req => {
   return token;
 }
 
+const tokenExtractor = req => {
+  const token = req && req.headers ? req.headers.authorization : null;
+  return token
+}
+
 const options = {
-  jwtFromRequest: cookieExtractor,
+  // jwtFromRequest: cookieExtractor,
+  jwtFromRequest: tokenExtractor,
   secretOrKey: process.env.SECRET_OR_KEY,
 };
 

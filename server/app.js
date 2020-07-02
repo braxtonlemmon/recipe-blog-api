@@ -17,16 +17,35 @@ require('./config/passport');
 app.use(passport.initialize());
 
 app.use(cors({
+  credentials: true,
   origin: [
     'http://localhost:3000',
     'http://localhost:3001',
     'http://localhost:8000',
+    'http://localhost:9000',
+    'http://localhost:5000',
     'https://peelthegarlic-admin.netlify.app',
     'http://peelthegarlic-admin.netlify.app',
     'https://www.peelthegarlic.com',
   ],
-  credentials: true
 }));
+
+
+
+// app.use(function(req, res, next) {
+//   res.header("Access-Control-Allow-Origin", "*");
+//   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+//   next();
+// })
+
+// app.use(function (req, res, next) {
+//   res.setHeader('Access-Control-Allow-Origin', 'http://localhost:5000');
+//   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+//   res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+//   res.setHeader('Access-Control-Allow-Credentials', true);
+//   next();
+// });
+
 app.use(compression());
 app.use(helmet());
 app.use(logger('dev'));
