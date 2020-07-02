@@ -19,20 +19,32 @@ functions:
           path: /
           method: ANY
           cors:
-            origin: '*'
+            origins:
+              - https://www.peelthegarlic.com
+              - https://peelthegarlic-admin.netlify.app
             headers:
               - Content-Type
               - Authorization
+              - X-Amz-Date
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
             allowCredentials: true
 
       - http:
           path: /{proxy+}
           method: ANY
           cors:
-            origin: '*'
+            origins:
+              - https://www.peelthegarlic.com
+              - https://peelthegarlic-admin.netlify.app
             headers:
               - Content-Type
               - Authorization
+              - X-Amz-Date
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
             allowCredentials: true
 
 
