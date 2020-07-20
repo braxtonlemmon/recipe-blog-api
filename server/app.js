@@ -20,12 +20,10 @@ app.use(cors({
   credentials: true,
   origin: [
     'http://localhost:3000',
-    'http://localhost:3001',
     'http://localhost:8000',
     'http://localhost:9000',
     'http://localhost:5000',
     'https://peelthegarlic-admin.netlify.app',
-    'http://peelthegarlic-admin.netlify.app',
     'https://www.peelthegarlic.com',
   ],
 }));

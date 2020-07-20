@@ -22,6 +22,10 @@ functions:
             origins:
               - https://www.peelthegarlic.com
               - https://peelthegarlic-admin.netlify.app
+              - http://localhost:3000
+              - http://localhost:5000
+              - http://localhost:8000
+              - http://localhost:9000
             headers:
               - Content-Type
               - Authorization
@@ -38,6 +42,10 @@ functions:
             origins:
               - https://www.peelthegarlic.com
               - https://peelthegarlic-admin.netlify.app
+              - http://localhost:3000
+              - http://localhost:5000
+              - http://localhost:8000
+              - http://localhost:9000
             headers:
               - Content-Type
               - Authorization
