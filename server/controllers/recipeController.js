@@ -65,8 +65,7 @@ const createRecipe = [
   body('ingredients', 'Ingredients are required.').exists(),
   body('steps', 'Recipe steps are required.').exists(),
   body('images', "At least one image required.").exists(),
-  // body('duration', 'Recipe duration is required').exists(),
-  body('size', 'Size is required').exists(),
+  body('size', 'Size is required').trim().isLength({ min: 1}),
   body('intro', 'Intro is required').trim().isLength({ min: 1 }),
   body('quote', 'Quote is required').trim().isLength({ min: 1 }),
   body('description', 'Description is required').trim().isLength({ min: 1 }),
@@ -85,7 +84,6 @@ const createRecipe = [
   body('intro').escape(),
   body('quote').escape(),
   body('images.*').escape(),
-  // body('duration').escape(),
   body('description').escape(),
   body('keywords').escape(),
   body('prep_time').escape(),
@@ -93,7 +91,6 @@ const createRecipe = [
   body('category').escape(),
   body('cook_method').escape(),
   body('cuisine').escape(),
-  // body('ratings.*').escape(),
 
   (req, res, next) => {
     console.log(req.body.image);
@@ -102,7 +99,6 @@ const createRecipe = [
       title: req.body.title,
       ingredients: JSON.parse(req.body.ingredients),
       steps: JSON.parse(req.body.steps),
-      // duration: req.body.duration,
       size: req.body.size,
       intro: req.body.intro,
       quote: req.body.quote,
@@ -116,6 +112,7 @@ const createRecipe = [
       category: req.body.category,
       cook_method: req.body.cook_method,
       cuisine: req.body.cuisine,
+      ratings: []
     })
     // req.body.intro ? (recipe.intro = req.body.intro) : null;
     // req.body.quote ? (recipe.quote = req.body.quote) : null;
@@ -211,6 +208,24 @@ const updateRecipe = [
   }
 ];
 
+const updateRecipeRatings = (req, res, next) => {
+  const id = req.params.id;
+  const rating = req.body.rating;
+  Recipe.findOneAndUpdate(
+    { _id: id},
+    { $push: { ratings: rating } },
+    function(error, success) {
+      if (error) {
+        console.log(error);
+        return next(err);
+      } else {
+        console.log(success);
+        res.send(success);
+      }
+    }
+  );
+}
+
 const destroyRecipe = (req, res, next) => {
   const id = req.params.id;
   async.parallel({
@@ -241,6 +256,7 @@ export default {
   createRecipe,
   updateRecipe,
   destroyRecipe,
-  showRecipe
+  showRecipe,
+  updateRecipeRatings,
 }
 

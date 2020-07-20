@@ -3,26 +3,26 @@ const Schema = mongoose.Schema;
 const moment = require('moment');
 
 const RecipeSchema = new Schema({
-  title:        { type: String, required: true },
-  ingredients:  { type: Array, required: true },
-  steps:        { type: Array, required: true },
+  title:        { type: String,   required: true },
+  ingredients:  { type: Array,   required: true },
+  steps:        { type: Array,   required: true },
   // duration:     { type: Number, required: true },
-  size:         { type: String, required: true },
-  intro:        { type: String, required: true },
-  quote:        { type: String, required: true },
-  images:       { type: Array, required: true },
+  size:         { type: String,  required: true },
+  intro:        { type: String,  required: true },
+  quote:        { type: String,  required: true },
+  images:       { type: Array,   required: true },
   is_published: { type: Boolean, default: false },
-  publish_date: { type: Date, default: '' },
-  created:      { type: Date, default: Date.now() },
+  publish_date: { type: Date,    default: '' },
+  created:      { type: Date,    default: Date.now() },
   
-  description:  { type: String, required: true },
-  keywords:     { type: String, required: true },
-  prep_time:    { type: Number, required: true }, // transform later
-  cook_time:    { type: Number, required: true }, // transform later
-  category:     { type: String, required: true },
-  cook_method:  { type: String, required: true },
-  cuisine:      { type: String, required: true },
-  ratings:      { type: Array }, // average total later
+  description:  { type: String,  required: true },
+  keywords:     { type: String,  required: true },
+  prep_time:    { type: Number,  required: true }, // transform later
+  cook_time:    { type: Number,  required: true }, // transform later
+  category:     { type: String,  required: true },
+  cook_method:  { type: String,  required: true },
+  cuisine:      { type: String,  required: true },
+  ratings:      { type: Array,   default: [] }, // average total later
 });
 
 RecipeSchema.set('toObject', { virtuals: true });
