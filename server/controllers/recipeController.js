@@ -12,8 +12,14 @@ const indexRecipes = (req, res, next) => {
       recipe.images = recipe.images.map(image => he.decode(image));
       recipe.intro = he.decode(recipe.intro);
       recipe.quote = he.decode(recipe.quote);
+      recipe.size = he.decode(recipe.size);
       recipe.steps = recipe.steps.map(step => he.decode(step));
       recipe.ingredients = recipe.ingredients.map(ingredient => he.decode(ingredient));
+      recipe.description = he.decode(recipe.description);
+      recipe.keywords = he.decode(recipe.keywords);
+      recipe.category = he.decode(recipe.category);
+      recipe.cook_method = he.decode(recipe.cook_method);
+      recipe.cuisine = he.decode(recipe.cuisine);
     })
     return res.json({ success: true, data: data });
   });
@@ -28,10 +34,14 @@ const indexPublishedRecipes = (req, res, next) => {
       recipe.images = recipe.images.map(image => he.decode(image));
       recipe.intro = he.decode(recipe.intro);
       recipe.quote = he.decode(recipe.quote);
+      recipe.size = he.decode(recipe.size);
       recipe.steps = recipe.steps.map((step) => he.decode(step));
-      recipe.ingredients = recipe.ingredients.map((ingredient) =>
-        he.decode(ingredient)
-      );
+      recipe.ingredients = recipe.ingredients.map((ingredient) => he.decode(ingredient));
+      recipe.description = he.decode(recipe.description);
+      recipe.keywords = he.decode(recipe.keywords);
+      recipe.category = he.decode(recipe.category);
+      recipe.cook_method = he.decode(recipe.cook_method);
+      recipe.cuisine = he.decode(recipe.cuisine);
     });
     return res.json({ success: true, data: data });
   });
@@ -51,17 +61,39 @@ const showRecipe = (req, res, next) => {
 };
 
 const createRecipe = [
-  // upload.single('image'),
   body('title', 'Title is required').trim().isLength({ min: 1 }),
   body('ingredients', 'Ingredients are required.').exists(),
   body('steps', 'Recipe steps are required.').exists(),
-  body("images", "At least one image required.").exists(),
-  body('duration', 'Recipe duration is required').exists(),
+  body('images', "At least one image required.").exists(),
+  // body('duration', 'Recipe duration is required').exists(),
+  body('size', 'Size is required').exists(),
+  body('intro', 'Intro is required').trim().isLength({ min: 1 }),
+  body('quote', 'Quote is required').trim().isLength({ min: 1 }),
+  body('description', 'Description is required').trim().isLength({ min: 1 }),
+  body('keywords', 'At least one keyword is required.').trim().isLength({ min: 1 }),
+  body('prep_time', 'Prep time is required').exists(),
+  body('cook_time', 'Cook time is required').exists(),
+  body('category', 'Category is required').trim().isLength({ min: 1 }),
+  body('cook_method', 'Cooking method is required').trim().isLength({ min: 1 }),
+  body('cuisine', 'Cuisine is required').trim().isLength({ min: 1 }),
+
+
   body('title').escape(),
   body('ingredients.*').escape(),
   body('steps.*').escape(),
+  body('size').escape(),
+  body('intro').escape(),
+  body('quote').escape(),
   body('images.*').escape(),
-  body('duration').escape(),
+  // body('duration').escape(),
+  body('description').escape(),
+  body('keywords').escape(),
+  body('prep_time').escape(),
+  body('cook_time').escape(),
+  body('category').escape(),
+  body('cook_method').escape(),
+  body('cuisine').escape(),
+  // body('ratings.*').escape(),
 
   (req, res, next) => {
     console.log(req.body.image);
@@ -70,13 +102,23 @@ const createRecipe = [
       title: req.body.title,
       ingredients: JSON.parse(req.body.ingredients),
       steps: JSON.parse(req.body.steps),
-      duration: req.body.duration,
+      // duration: req.body.duration,
+      size: req.body.size,
+      intro: req.body.intro,
+      quote: req.body.quote,
       images: JSON.parse(req.body.images),
       is_published: req.body.is_published,
       publish_date: req.body.is_published === 'true' ? Date.now() : null,
+      description: req.body.description,
+      keywords: req.body.keywords,
+      prep_time: req.body.prep_time,
+      cook_time: req.body.cook_time,
+      category: req.body.category,
+      cook_method: req.body.cook_method,
+      cuisine: req.body.cuisine,
     })
-    req.body.intro ? (recipe.intro = req.body.intro) : null;
-    req.body.quote ? (recipe.quote = req.body.quote) : null;
+    // req.body.intro ? (recipe.intro = req.body.intro) : null;
+    // req.body.quote ? (recipe.quote = req.body.quote) : null;
     if (!errors.isEmpty()) {
       res.send({ recipe: recipe, errors: errors.array() });
       return;
@@ -99,12 +141,34 @@ const updateRecipe = [
   body("ingredients", "Ingredients are required.").exists(),
   body("steps", "Recipe steps are required.").exists(),
   body("images", "At least one image required.").exists(),
-  body('duration', 'Recipe duration is required').exists(),
+  // body('duration', 'Recipe duration is required').exists(),
+  body('size', 'Size is required').exists(),
+  body('intro', 'Intro is required').trim().isLength({ min: 1 }),
+  body('quote', 'Quote is required').trim().isLength({ min: 1 }),
+  body('description', 'Description is required').trim().isLength({ min: 1 }),
+  body('keywords', 'At least one keyword is required.').trim().isLength({ min: 1 }),
+  body('prep_time', 'Prep time is required').exists(),
+  body('cook_time', 'Cook time is required').exists(),
+  body('category', 'Category is required').trim().isLength({ min: 1 }),
+  body('cook_method', 'Cooking method is required').trim().isLength({ min: 1 }),
+  body('cuisine', 'Cuisine is required').trim().isLength({ min: 1 }),
+  
   body('title').escape(),
   body('ingredients.*').escape(),
   body('steps.*').escape(),
   body('images.*').escape(),
-  body('duration').escape(),
+  // body('duration').escape(),
+  body('size').escape(),
+  body('intro').escape(),
+  body('quote').escape(),
+  body('description').escape(),
+  body('keywords').escape(),
+  body('prep_time').escape(),
+  body('cook_time').escape(),
+  body('category').escape(),
+  body('cook_method').escape(),
+  body('cuisine').escape(),
+
 
   (req, res, next) => {
     const errors = validationResult(req);
@@ -114,13 +178,24 @@ const updateRecipe = [
       ingredients: JSON.parse(req.body.ingredients),
       steps: JSON.parse(req.body.steps),
       duration: req.body.duration,
+      size: req.body.size,
       images: JSON.parse(req.body.images),
       is_published: req.body.is_published,
       publish_date: Date.now(),
-      _id: req.params.id
+      intro: req.body.intro,
+      quote: req.body.quote,
+      description: req.body.description,
+      keywords: req.body.keywords,
+      prep_time: req.body.prep_time,
+      cook_time: req.body.cook_time,
+      category: req.body.category,
+      cook_method: req.body.cook_method,
+      cuisine: req.body.cuisine,
+      
+      _id: req.params.id,
     });
-    req.body.intro ? (recipe.intro = req.body.intro) : null;
-    req.body.quote ? (recipe.quote = req.body.quote) : null;
+    // req.body.intro ? (recipe.intro = req.body.intro) : null;
+    // req.body.quote ? (recipe.quote = req.body.quote) : null;
     if (!errors.isEmpty()) {
       res.send(errors.array());
       return;
