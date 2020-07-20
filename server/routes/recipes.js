@@ -13,11 +13,7 @@ router.post(
   recipeController.createRecipe
 );
 
-router.put(
-  "/:id/ratings",
-  passport.authenticate("jwt", { session: false }),
-  recipeController.updateRecipeRatings
-);
+router.put("/:id/ratings", recipeController.updateRecipeRatings);
 
 router.put(
   "/:id",
