@@ -6,7 +6,7 @@ const router = Router();
 
 router.get('/', recipeController.indexRecipes);
 router.get("/published", recipeController.indexPublishedRecipes);
-
+router.get('/:id/ratings', recipeController.getRecipeRatings);
 router.post(
   "/",
   passport.authenticate("jwt", { session: false }),

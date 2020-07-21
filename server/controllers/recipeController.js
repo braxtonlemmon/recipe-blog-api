@@ -47,6 +47,19 @@ const indexPublishedRecipes = (req, res, next) => {
   });
 }
 
+const getRecipeRatings = (req, res, next) => {
+  Recipe.findById(req.params.id)
+  .exec(function(err, recipe) {
+    if (err) { return next(err) }
+    if (recipe === null) {
+      const err = new Error('Recipe not found');
+      err.status = 404;
+      return next(err);
+    }
+    return res.json({ success: true, ratings: recipe.ratings });
+  });
+};
+
 const showRecipe = (req, res, next) => {
   Recipe.findById(req.params.id)
   .exec(function(err, recipe) {
@@ -253,6 +266,7 @@ const destroyRecipe = (req, res, next) => {
 export default {
   indexRecipes,
   indexPublishedRecipes,
+  getRecipeRatings,
   createRecipe,
   updateRecipe,
   destroyRecipe,
