@@ -29,7 +29,7 @@
   "author": "Braxton Lemmon",
   "license": "ISC",
   "devDependencies": {
-    "serverless-offline": "^6.4.0"
+    "serverless-offline": "^6.5.0"
   },
   "dependencies": {
     "@babel/cli": "^7.10.1",

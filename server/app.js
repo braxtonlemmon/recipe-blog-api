@@ -52,6 +52,9 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
+app.get('/api/yo', (req, res, next) => {
+  return res.json({success: true })
+})
 app.use('/api/users', routes.users);
 app.use('/api/recipes', routes.recipes);
 app.use('/api/comments', routes.comments)
