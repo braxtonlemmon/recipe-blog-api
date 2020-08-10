@@ -24,7 +24,7 @@ const email = new Mail({
   juiceResources: {
     preserveImportant: true,
     webResources: {
-      relativeTo: path.join(__dirname, '..', 'emails', 'newsletter')
+      relativeTo: path.join(__dirname, '..', 'emails')
     }
   },
   send: true,
