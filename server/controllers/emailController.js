@@ -1,26 +1,26 @@
 import Email from '../models/email';
 import { body, validationResult } from 'express-validator';
-import nodemailer from 'nodemailer';
-const he = require('he');
+import crypto from 'crypto';
 
-const mailer = nodemailer.createTransport({
-  service: 'gmail',
-  host: 'smtp.gmail.com',
-  port: 587,
-  auth: {
-    user: process.env.GMAIL_ADDRESS,
-    pass: process.env.GMAIL_PASSWORD,
-  }
-});
-
-const indexEmails = (req, res, next) => {
+const emailsTotalCount = (req, res, next) => {
   Email.find({ })
   .exec((err, emails) => {
-    if (err) {
-      return next(err);
-    }
-    return res.json({ success: true, data: emails });
+    if (err) { return next(err); }
+    return res.json({ success: true, count: emails.length});
   });
+}
+
+const getEmail = (req, res, next) => {
+  const id = req.params.id;
+  Email.findOne({ subscriberId: id})
+  .exec((err, subscriber) => {
+    if (err) { return next(err); }
+    if (!subscriber) {
+      return res.status(400).send("Subscriber not found");
+    }
+
+    return res.status(200).send({ success: true, address: subscriber.address })
+  })
 }
 
 const createAddress = [
@@ -28,88 +28,55 @@ const createAddress = [
   body('address').escape(),
 
   (req, res, next) => {
-    const errors = validationResult(req);
-    const email = new Email({
-      address: req.body.address
-    });
-    if (!errors.isEmpty()) {
-      res.send({ email: email, errors: errors.array() });
-      return;
-    }
-    email.save(err => {
-      if (err) {
-        return next(err);
-      }
-      res.send(email);
-    })
-  }
-]
-
-const sendNewsletter = [
-  body('message', 'Message is required').trim().isLength({ min: 1 }),
-  body('subject', 'Subject is required.').trim().isLength({ min: 1 }),
-  body('message').escape(),
-  body('subject').escape(),
-
-  (req, res, next) => {
-    Email.find({ })
-    .exec((err, emails) => {
+    Email.findOne({ address: req.body.address})
+    .exec((err, subscriber) => {
       if (err) { return next(err); }
-      const addresses = emails.map(emailObj => emailObj.address);
-
-      mailer.verify(function(err, success) {
-        err ? console.log(err) : console.log('server is ready');
-      })
-      const message = he.decode(req.body.message);
-      const subject = he.decode(req.body.subject);
-      const myEmail = 'peelthegarlic@gmail.com';
-      mailer.sendMail(
-        {
-          from: myEmail,
-          to: addresses,
-          subject: subject,
-          text: message
-        },
-        function (err, info) {
-          if (err) return res.status(500).send(err);
-          res.json({ success: true });
+      if (subscriber) {
+        return res.status(400).send('Subscriber already exists!');
+      }
+      const address = req.body.address;
+      const id = crypto.createHash('md5').update(address).digest('hex');
+      const errors = validationResult(req);
+      
+      const email = new Email({
+        address: address,
+        subscriberId: id
+      });
+      if (!errors.isEmpty()) {
+        res.send({ email: email, errors: errors.array() });
+        return;
+      }
+      email.save(err => {
+        if (err) {
+          return next(err);
         }
-      )
+        res.send(email);
+      })
     })
   }
 ]
 
-const sendNewsletterTest = [
-  body("message", "Message is required").trim().isLength({ min: 1 }),
-  body("subject", "Subject is required.").trim().isLength({ min: 1 }),
-  body("message").escape(),
-  body("subject").escape(),
-
-  (req, res, next) => {
-    mailer.verify(function(err, success) {
-      err ? console.log(err) : console.log('server is ready');
+const deleteAddress = (req, res, next) => {
+  const subscriberId = req.params.id;
+  Email.findOne({ subscriberId: subscriberId })
+  .exec((err, subscriber) => {
+    if (err) { return next(err); }
+    if (!subscriber) {
+      return res.status(400).send("Subscriber not found");
+    }
+    const id = subscriber._id;
+    console.log(id);
+    Email.findByIdAndRemove(id, function deleteSubscriber(err) {
+      if (err) { return next(err); }
+      return res.status(200).send('Subscriber deleted');
     })
-    const message = he.decode(req.body.message);
-    const subject = he.decode(req.body.subject);
-    const myEmail = 'peelthegarlic@gmail.com';
-    mailer.sendMail(
-      {
-        from: myEmail,
-        to: 'braxtonlemmon@gmail.com',
-        subject: subject,
-        text: message
-      },
-      function (err, info) {
-        if (err) return res.status(500).send(err);
-        res.json({ success: true })
-      }
-    )
-  }
-];
+  })
+}
+
 
 export default {
-  indexEmails,
+  emailsTotalCount,
+  getEmail,
   createAddress,
-  sendNewsletter,
-  sendNewsletterTest
+  deleteAddress
 }

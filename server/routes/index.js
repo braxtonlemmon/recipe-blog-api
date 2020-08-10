@@ -4,6 +4,7 @@ import comments from './comments';
 import auth from './auth';
 import contact from './contact';
 import emails from './emails';
+import newsletter from './newsletter';
 
 export default {
   users,
@@ -11,5 +12,6 @@ export default {
   comments,
   auth,
   contact,
-  emails
+  emails,
+  newsletter
 }

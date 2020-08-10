@@ -21,7 +21,7 @@
     "server": "node ./dist-server/server.js",
     "dev": "NODE_ENV=development npm-run-all build server",
     "prod": "NODE_ENV=production npm-run-all build server",
-    "transpile": "babel ./server --out-dir dist-server",
+    "transpile": "babel ./server --out-dir dist-server --copy-files",
     "clean": "rimraf dist-server",
     "watch:dev": "nodemon"
   },
@@ -44,8 +44,10 @@
     "compression": "^1.7.4",
     "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
+    "crypto": "^1.0.1",
     "debug": "^4.1.1",
     "dotenv": "^8.2.0",
+    "email-templates": "^7.1.0",
     "express": "^4.17.1",
     "express-validator": "^6.5.0",
     "he": "^1.2.0",
@@ -63,6 +65,7 @@
     "passport": "^0.4.1",
     "passport-jwt": "^4.0.0",
     "path": "^0.12.7",
+    "pug": "^3.0.0",
     "rimraf": "^3.0.2",
     "serverless-apigw-binary": "^0.4.4",
     "serverless-http": "^2.5.0"

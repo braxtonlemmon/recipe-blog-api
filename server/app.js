@@ -14,6 +14,7 @@ const app = express();
 
 require('./config/passport');
 
+
 app.use(passport.initialize());
 
 app.use(cors({
@@ -28,7 +29,7 @@ app.use(cors({
   ],
 }));
 
-
+app.set('view engine', 'pug');
 
 // app.use(function(req, res, next) {
 //   res.header("Access-Control-Allow-Origin", "*");
@@ -58,6 +59,7 @@ app.use('/api/comments', routes.comments)
 app.use('/api/auth', routes.auth);
 app.use('/api/contact', routes.contact);
 app.use('/api/emails', routes.emails);
+app.use('/api/newsletter', routes.newsletter);
 app.get('/api/me', passport.authenticate('jwt', { session: false, failWithError: true }), (req, res, next) => {
   return res.json({ success: true, user: req.user.username });
 })
