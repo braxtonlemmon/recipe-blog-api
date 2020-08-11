@@ -1,0 +1,26 @@
+doctype html
+html
+  head
+    link(rel="stylesheet", href="style.css", data-inline)
+    link(href="https://fonts.googleapis.com/css?family=Montserrat:thin,extra-light,light,100,200,300,400,500,600,700,800" rel="stylesheet") 
+  body
+    .container
+      a.welcome-title(href=url, target="_blank", rel="noopener noreferrer") 
+        h1 Peel the Garlic
+      p.great-news Rah rah! This is great news!
+      p.intro You have successfully subscribed to Peel the Garlic's weekly email. Congratulations and welcome to the family. 
+      a.img-link(href=url, target="_blank", rel="noopener noreferrer")
+        img(src=imgUrl)
+      p.outro As mentioned on the website, you will receive one email every week featuring a new recipe. If you haven't followed a recipe on Peel the Garlic yet, you're in for a treat. 
+    
+      p.outro Ingredients and recipe instructions are clickable, allowing you to keep track of your progress. If you are working on a tablet-sized screen or larger, the list of ingredients will remain fixed on the screen, preventing the need to continuously scroll up and down to toggle between ingredients and instructions.
+      
+      p.outro If you have any questions or suggestions about anything (recipes, the site, my writing), don't hesitate to contact me! Again, welcome to the site. I hope you find something you enjoy.
+      
+      a(class='button', href='http://www.peelthegarlic.com', rel="noopener noreferrer" target='_blank') TO THE RECIPES
+
+      div.footer
+        p.copyright © Peel the Garlic 2020
+        a.unsubscribe(href='https://www.peelthegarlic.com/unsubscribe?subscriber=' + id, target="_blank", rel="noopener noreferrer") Unsubscribe
+
+

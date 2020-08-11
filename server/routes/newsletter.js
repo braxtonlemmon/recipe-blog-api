@@ -10,4 +10,7 @@ router.post('/', newsletterController.sendNewsletter);
 // POST send a test newsletter to myself
 router.post('/test', newsletterController.sendNewsletterTest);
 
+// POST send a welcome email to new subscriber
+router.post('/welcome', newsletterController.sendWelcome);
+
 export default router;

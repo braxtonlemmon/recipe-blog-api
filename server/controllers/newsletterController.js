@@ -38,54 +38,63 @@ const email = new Mail({
 
 const sendNewsletter = [
   body('title').escape(),
-  body('message').escape(),
-  body('imageUrl').escape(),
+  body('subject').escape(),
+  body('description').escape(),
 
   (req, res, next) => {
+    const { title, description, subject, imgUrl, url } = req.body;
     Email.find({ })
     .exec((err, subscribers) => {
+      if (err) { return next(err); }
       subscribers.forEach(subscriber => {        
         email.send({
-          template: path.join(__dirname, '..', 'emails'),
+          template: path.join(__dirname, '..', 'emails', 'newsletter'),
           message: {
             to: subscriber.address,
-            subject: req.body.subject,
+            subject: `Peel the Garlic | ${subject}`,
           },
+          send: true,
           locals: {
             id: subscriber.subscriberId,
+            title: title,
+            description: description,
+            imgUrl: imgUrl,
+            url: url
           }
-        })
-        .then(() => {
-          return res.json({ success: true })
         })
         .catch(console.error);
       })
+      return res.json({ success: true });
     })
   }
 
 ]
 
 const sendNewsletterTest = [
+  body('title').escape(),
   body('subject').escape(),
-  body('message').escape(),
-  body('imageUrl').escape(),
+  body('description').escape(),
 
   (req, res, next) => {
+      const { title, description, subject, imgUrl, url } = req.body;
       let id = crypto
         .createHash("md5")
         .update("braxtonlemmon@gmail.com")
         .digest("hex");
       console.log(id);
       email.send({
-        template: path.join(__dirname, '..', 'emails'),
+        template: path.join(__dirname, '..', 'emails', 'newsletter'),
         message: {
           to: 'braxtonlemmon@gmail.com',
-          subject: req.body.subject,
+          subject: `Peel the Garlic | ${subject}`,
         },
         send: true,
         locals: {
-          email: 'Braxton',
-          id: id
+          id: id,
+          title: title,
+          description: description,
+          imgUrl: imgUrl,
+          url: url
         }
       })
       .then(() => {
@@ -95,7 +104,32 @@ const sendNewsletterTest = [
   }
 ]
 
+const sendWelcome = (req, res, next) => {
+  let id = crypto
+    .createHash("md5")
+    .update(req.body.to)
+    .digest("hex")
+  email.send({
+    template: path.join(__dirname, '..', 'emails', 'welcome'),
+    message: {
+      to: req.body.to,
+      subject: 'Welcome to Peel the Garlic!'
+    },
+    send: true,
+    locals: {
+      id: id,
+      url: "https://www.peelthegarlic.com",
+      imgUrl: "https://remember-to-cook.s3.us-east-2.amazonaws.com/family+(1).jpg"
+    }
+  })
+  .then(() => {
+    return res.json({ success: true })
+  })
+  .catch(console.error);
+}
+
 export default {
   sendNewsletter,
-  sendNewsletterTest
+  sendNewsletterTest,
+  sendWelcome
 }

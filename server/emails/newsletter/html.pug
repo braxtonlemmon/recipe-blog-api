@@ -1,0 +1,19 @@
+doctype html
+html
+  head
+    link(rel="stylesheet", href="style.css", data-inline)
+    link(href="https://fonts.googleapis.com/css?family=Montserrat:thin,extra-light,light,100,200,300,400,500,600,700,800" rel="stylesheet") 
+  body
+    .container
+      h1 Peel the Garlic
+      p.presents presents...
+      a.recipe-title(href=url, target="_blank", rel="noopener noreferrer") 
+        p.title #{title}
+      a.img-link(href=url, target="_blank", rel="noopener noreferrer")
+        img(src=imgUrl)
+      p.description #{description}
+      div.footer
+        p.copyright © Peel the Garlic 2020
+        a.unsubscribe(href='https://www.peelthegarlic.com/unsubscribe?subscriber=' + id, target="_blank", rel="noopener noreferrer") Unsubscribe
+
+
