@@ -104,29 +104,34 @@ const sendNewsletterTest = [
   }
 ]
 
-const sendWelcome = (req, res, next) => {
-  let id = crypto
-    .createHash("md5")
-    .update(req.body.to)
-    .digest("hex")
-  email.send({
-    template: path.join(__dirname, '..', 'emails', 'welcome'),
-    message: {
-      to: req.body.to,
-      subject: 'Welcome to Peel the Garlic!'
-    },
-    send: true,
-    locals: {
-      id: id,
-      url: "https://www.peelthegarlic.com",
-      imgUrl: "https://remember-to-cook.s3.us-east-2.amazonaws.com/family+(1).jpg"
-    }
-  })
-  .then(() => {
-    return res.json({ success: true })
-  })
-  .catch(console.error);
-}
+const sendWelcome = [
+  body('address', 'Address is required').trim().isLength({ min: 1, max: 254 }),
+  body('address').escape(),
+
+  (req, res, next) => {
+    let id = crypto
+      .createHash("md5")
+      .update(req.body.address)
+      .digest("hex")
+    email.send({
+      template: path.join(__dirname, '..', 'emails', 'welcome'),
+      message: {
+        to: req.body.address,
+        subject: 'Welcome to Peel the Garlic!'
+      },
+      send: true,
+      locals: {
+        id: id,
+        url: "https://www.peelthegarlic.com",
+        imgUrl: "https://remember-to-cook.s3.us-east-2.amazonaws.com/family+(1).jpg"
+      }
+    })
+    .then(() => {
+      return res.json({ success: true })
+    })
+    .catch(console.error);
+  }
+]
 
 export default {
   sendNewsletter,
