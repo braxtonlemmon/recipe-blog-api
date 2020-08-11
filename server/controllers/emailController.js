@@ -32,7 +32,7 @@ const createAddress = [
     .exec((err, subscriber) => {
       if (err) { return next(err); }
       if (subscriber) {
-        return res.status(400).send('Subscriber already exists!');
+        return res.send({ success: false, message: 'Subscriber already exists!'});
       }
       const address = req.body.address;
       const id = crypto.createHash('md5').update(address).digest('hex');
@@ -50,7 +50,7 @@ const createAddress = [
         if (err) {
           return next(err);
         }
-        res.send(email);
+        res.send({ success: true, message: 'Email added!'});
       })
     })
   }
