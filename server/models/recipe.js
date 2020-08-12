@@ -6,7 +6,7 @@ const RecipeSchema = new Schema({
   title:        { type: String,   required: true },
   ingredients:  { type: Array,   required: true },
   steps:        { type: Array,   required: true },
-  // duration:     { type: Number, required: true },
+
   size:         { type: String,  required: true },
   intro:        { type: String,  required: true },
   quote:        { type: String,  required: true },
@@ -23,6 +23,8 @@ const RecipeSchema = new Schema({
   cook_method:  { type: String,  required: true },
   cuisine:      { type: String,  required: true },
   ratings:      { type: Array,   default: [] }, // average total later
+
+  newsletter:   { type: Boolean, default: false } // indicates if newsletter has been sent for recipe
 });
 
 RecipeSchema.set('toObject', { virtuals: true });

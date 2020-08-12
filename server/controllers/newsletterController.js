@@ -28,12 +28,13 @@ const email = new Mail({
     }
   },
   send: true,
-  preview: {
-    open: {
-      app: 'firefox',
-      wait: false
-    }
-  }
+  preview: false
+  // preview: {
+  //   open: {
+  //     app: 'firefox',
+  //     wait: false
+  //   }
+  // }
 })
 
 const sendNewsletter = [
@@ -88,7 +89,7 @@ const sendNewsletterTest = [
           to: 'braxtonlemmon@gmail.com',
           subject: `Peel the Garlic | ${subject}`,
         },
-        send: true,
+        // send: true,
         locals: {
           id: id,
           title: title,
@@ -109,21 +110,22 @@ const sendWelcome = [
   body('address').escape(),
 
   (req, res, next) => {
+    const address = req.body.address;
     let id = crypto
       .createHash("md5")
-      .update(req.body.address)
+      .update(address)
       .digest("hex")
     email.send({
       template: path.join(__dirname, '..', 'emails', 'welcome'),
       message: {
-        to: req.body.address,
+        to: `<${req.body.address}>`,
         subject: 'Welcome to Peel the Garlic!'
       },
-      send: true,
+      // send: true,
       locals: {
         id: id,
         url: "https://www.peelthegarlic.com",
-        imgUrl: "https://remember-to-cook.s3.us-east-2.amazonaws.com/family+(1).jpg"
+        imgUrl: "https://remember-to-cook.s3.us-east-2.amazonaws.com/bagnat3.jpg"
       }
     })
     .then(() => {
