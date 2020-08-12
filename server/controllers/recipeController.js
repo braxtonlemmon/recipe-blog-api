@@ -127,8 +127,7 @@ const createRecipe = [
       cuisine: req.body.cuisine,
       ratings: []
     })
-    // req.body.intro ? (recipe.intro = req.body.intro) : null;
-    // req.body.quote ? (recipe.quote = req.body.quote) : null;
+
     if (!errors.isEmpty()) {
       res.send({ recipe: recipe, errors: errors.array() });
       return;
@@ -151,7 +150,6 @@ const updateRecipe = [
   body("ingredients", "Ingredients are required.").exists(),
   body("steps", "Recipe steps are required.").exists(),
   body("images", "At least one image required.").exists(),
-  // body('duration', 'Recipe duration is required').exists(),
   body('size', 'Size is required').exists(),
   body('intro', 'Intro is required').trim().isLength({ min: 1 }),
   body('quote', 'Quote is required').trim().isLength({ min: 1 }),
@@ -167,7 +165,6 @@ const updateRecipe = [
   body('ingredients.*').escape(),
   body('steps.*').escape(),
   body('images.*').escape(),
-  // body('duration').escape(),
   body('size').escape(),
   body('intro').escape(),
   body('quote').escape(),
@@ -182,42 +179,44 @@ const updateRecipe = [
 
   (req, res, next) => {
     const errors = validationResult(req);
-  
-    const recipe = new Recipe({
-      title: req.body.title,
-      ingredients: JSON.parse(req.body.ingredients),
-      steps: JSON.parse(req.body.steps),
-      duration: req.body.duration,
-      size: req.body.size,
-      images: JSON.parse(req.body.images),
-      is_published: req.body.is_published,
-      publish_date: Date.now(),
-      intro: req.body.intro,
-      quote: req.body.quote,
-      description: req.body.description,
-      keywords: req.body.keywords,
-      prep_time: req.body.prep_time,
-      cook_time: req.body.cook_time,
-      category: req.body.category,
-      cook_method: req.body.cook_method,
-      cuisine: req.body.cuisine,
-      
-      _id: req.params.id,
-    });
-    // req.body.intro ? (recipe.intro = req.body.intro) : null;
-    // req.body.quote ? (recipe.quote = req.body.quote) : null;
-    if (!errors.isEmpty()) {
-      res.send(errors.array());
-      return;
-    }
-    else {
-      Recipe.findByIdAndUpdate(req.params.id, recipe, {}, function (err, theRecipe) {
-        if (err) {
-          return next (err);
-        }
-        res.send(theRecipe);
-      })
-    }
+    Recipe.findById(req.params.id)
+    .exec((err, oldRecipe) => {
+      if (err) { return next(err); }
+      const recipe = new Recipe({
+        title: req.body.title,
+        ingredients: JSON.parse(req.body.ingredients),
+        steps: JSON.parse(req.body.steps),
+        duration: req.body.duration,
+        size: req.body.size,
+        images: JSON.parse(req.body.images),
+        is_published: req.body.is_published,
+        publish_date: oldRecipe.publish_date ? oldRecipe.publish_date : Date.now(),
+        intro: req.body.intro,
+        quote: req.body.quote,
+        description: req.body.description,
+        keywords: req.body.keywords,
+        prep_time: req.body.prep_time,
+        cook_time: req.body.cook_time,
+        category: req.body.category,
+        cook_method: req.body.cook_method,
+        cuisine: req.body.cuisine,
+        
+        _id: req.params.id,
+      });
+
+      if (!errors.isEmpty()) {
+        res.send(errors.array());
+        return;
+      }
+      else {
+        Recipe.findByIdAndUpdate(req.params.id, recipe, {}, function (err, theRecipe) {
+          if (err) {
+            return next (err);
+          }
+          res.send(theRecipe);
+        })
+      }
+    })
   }
 ];
 
