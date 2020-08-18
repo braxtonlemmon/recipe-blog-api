@@ -1,6 +1,7 @@
 import Email from '../models/email';
 import { body, validationResult } from 'express-validator';
 import crypto from 'crypto';
+const fs = require('fs');
 
 const emailsTotalCount = (req, res, next) => {
   Email.find({ })
@@ -20,6 +21,25 @@ const getEmail = (req, res, next) => {
     }
 
     return res.status(200).send({ success: true, address: subscriber.address })
+  })
+}
+
+const addEmailToChimp = (req, res, next) => {
+  Email.find({})
+  .exec((err, subscribers) => {
+    if (err) { return next(err) }
+    console.log('writing csv file...')
+    const emails = subscribers.map(subscriber => subscriber.address);
+
+    const writeStream = fs.createWriteStream('emails.csv');
+    
+    writeStream.write(`Email Address \n`);
+    emails.forEach(function(element) {
+      writeStream.write(`${element}\n`);
+    })
+    
+    console.log('finished');
+    return res.json({ success: true })
   })
 }
 
@@ -78,5 +98,6 @@ export default {
   emailsTotalCount,
   getEmail,
   createAddress,
+  addEmailToChimp,
   deleteAddress
 }

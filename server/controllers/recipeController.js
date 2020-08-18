@@ -238,6 +238,23 @@ const updateRecipeRatings = (req, res, next) => {
   );
 }
 
+const updateRecipeNewsletter = (req, res, next) => {
+  const id = req.params.id;
+  Recipe.findOneAndUpdate(
+    { _id: id },
+    { newsletter: true },
+    function(error, success) {
+      if (error) {
+        console.log(error);
+        return next(err);
+      } else {
+        console.log(success);
+        res.send(success);
+      }
+    }
+  )
+}
+
 const destroyRecipe = (req, res, next) => {
   const id = req.params.id;
   async.parallel({
@@ -271,5 +288,6 @@ export default {
   destroyRecipe,
   showRecipe,
   updateRecipeRatings,
+  updateRecipeNewsletter
 }
 

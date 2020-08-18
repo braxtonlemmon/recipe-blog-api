@@ -16,6 +16,11 @@ router.post(
 router.put("/:id/ratings", recipeController.updateRecipeRatings);
 
 router.put(
+  "/:id/newsletter", 
+  recipeController.updateRecipeNewsletter
+);
+
+router.put(
   "/:id",
   passport.authenticate("jwt", { session: false }),
   recipeController.updateRecipe
