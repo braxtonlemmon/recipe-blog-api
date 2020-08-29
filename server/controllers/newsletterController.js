@@ -346,8 +346,32 @@ const sendWelcome = [
   }
 ]
 
+const informUnsubscribe = (req, res, next) => {
+  Email.findOne({ subscriberId: req.body.subscriberId })
+  .exec((err, subscriber) => {
+    if (err) { return next(err); }
+    if (!subscriber) {
+      return res.status(400).send("Subscriber not found!");
+    }
+    const emailToRemove = subscriber.address;
+    email.send({
+      message: {
+        to: `<hello@peelthegarlic.com>`,
+        subject: 'REMOVAL',
+        text: `Remove ${emailToRemove}`
+      }
+    })
+    .then(() => {
+      mailer.close();
+      return res.json({ success: true })
+    })
+    .catch(console.error);
+  })
+}
+
 export default {
   sendNewsletter,
   sendNewsletterTest,
-  sendWelcome
+  sendWelcome,
+  informUnsubscribe
 }

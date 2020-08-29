@@ -13,4 +13,7 @@ router.post('/test', newsletterController.sendNewsletterTest);
 // POST send a welcome email to new subscriber
 router.post('/welcome', newsletterController.sendWelcome);
 
+// POST send a notification of removal to admin email, then manually remove from list
+router.post('/informUnsubscribe', newsletterController.informUnsubscribe);
+
 export default router;
